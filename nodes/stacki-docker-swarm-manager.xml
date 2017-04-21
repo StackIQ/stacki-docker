@@ -13,9 +13,9 @@
 	</si_copyright>
 
 
-<package cond="docker.swarm.manager">docker-swarm-demos</package>
+<package cond="&docker.swarm.manager;">docker-swarm-demos</package>
 
-<boot order="post" cond="docker.swarm.manager">
+<boot order="post" cond="&docker.swarm.manager;">
 lcnuke=`echo &nukedisks; | tr '[:upper:]' '[:lower:]'`
 if [ "${lcnuke}" = "true" ]; then 
 /opt/stack/sbin/swarmtoken clear
@@ -45,7 +45,7 @@ done
 fi
 </boot>
 
-<boot order="post" cond="docker.swarm.overlay_network">
+<boot order="post" cond="&docker.swarm.mode;">
 lcnuke=`echo &nukedisks; | tr '[:upper:]' '[:lower:]'`
 if [ "${lcnuke}" = "true" ]; then 
 docker network create \
@@ -57,7 +57,7 @@ fi
 </boot>
 
 
-<boot order="post" cond="docker.swarm.demo">
+<boot order="post" cond="&docker.swarm.demo;">
 lcnuke=`echo &nukedisks; | tr '[:upper:]' '[:lower:]'`
 if [ "${lcnuke}" = "true" ]; then 
 

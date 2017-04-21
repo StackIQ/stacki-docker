@@ -13,7 +13,7 @@
 	</si_copyright>
 
 
-<boot order="post" cond="docker.swarm.node">
+<boot order="post" cond="&docker.swarm.node;">
 lcnuke=`echo &nukedisks; | tr '[:upper:]' '[:lower:]'`
 if [ "${lcnuke}" = "true" ]; then 
 TOKEN=`/opt/stack/sbin/swarmtoken get worker`
@@ -30,7 +30,7 @@ done
 fi
 </boot>
 
-<boot order="post" cond="docker.swarm.secondary_manager">
+<boot order="post" cond="&docker.swarm.secondary_manager;">
 lcnuke=`echo &nukedisks; | tr '[:upper:]' '[:lower:]'`
 if [ "${lcnuke}" = "true" ]; then 
 TOKEN=`/opt/stack/sbin/swarmtoken get manager`

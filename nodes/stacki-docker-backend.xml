@@ -16,7 +16,7 @@
 <package disable="1">ivtv*</package>
 <package meta="1">@core</package>
 
-<post cond="sync.hosts">
+<post cond="&sync.hosts;">
 <file name="/etc/hosts">
 <eval>
 cat /etc/hosts

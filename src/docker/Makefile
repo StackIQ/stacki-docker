@@ -40,19 +40,17 @@
 # @SI_Copyright@
 
 ROLLROOT	= ../..
-RPM.STRATEGY	= copy
+RPM.STRATEGY	= custom
 
 include $(STACKBUILD)/etc/CCRules.mk
 
 refresh::
 	rm -fr ./RPMS
 	mkdir ./RPMS
+	reposync -d -p ./RPMS -n -r docker-ce-stable -c ./docker.ce.repo --norepopath
 
-build:
+rpm::
 	mkdir -p $(REDHAT.RPMS)/x86_64/
 	mkdir -p $(REDHAT.RPMS)/noarch/
-
-rpm::	build
-	reposync -d -p ./RPMS -n -r docker-ce-stable -c ./docker.ce.repo --norepopath
 	cp -p ./RPMS/Packages/*.x86_64.rpm $(REDHAT.RPMS)/x86_64/
 	cp -p ./RPMS/Packages/*.noarch.rpm $(REDHAT.RPMS)/noarch/

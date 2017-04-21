@@ -40,19 +40,17 @@
 # @SI_Copyright@
 
 ROLLROOT	= ../..
-RPM.STRATEGY	= copy
+RPM.STRATEGY	= custom
 
 include $(STACKBUILD)/etc/CCRules.mk
 
 refresh::
 	rm -fr ./RPMS
 	mkdir ./RPMS
+	reposync -n -r elrepo-kernel -c ./elrepo.repo --norepopath
 
-build:
+rpm::
 	mkdir -p $(REDHAT.RPMS)/x86_64/
 	mkdir -p $(REDHAT.RPMS)/noarch/
-
-rpm::	build
-	reposync -n -r elrepo-kernel -c ./elrepo.repo --norepopath
 	cp -p ./RPMS/*.x86_64.rpm $(REDHAT.RPMS)/x86_64/
 	cp -p ./RPMS/*.noarch.rpm $(REDHAT.RPMS)/noarch/

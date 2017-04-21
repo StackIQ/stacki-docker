@@ -25,7 +25,7 @@
 	<order cond="docker.swarm.manager" head="stacki-docker-backend" tail="stacki-docker-swarm-manager"/>
 	<edge cond="docker.swarm.manager" from="stacki-docker-backend" to="stacki-docker-swarm-manager" />
 
-	<order cond="docker.swarm" head="stacki-docker-backend" tail="stacki-docker-swarm"/>
-	<edge cond="docker.swarm" from="stacki-docker-backend" to="stacki-docker-swarm" />
+	<order cond="docker.swarm.mode" head="stacki-docker-backend" tail="stacki-docker-swarm"/>
+	<edge cond="docker.swarm.mode" from="stacki-docker-backend" to="stacki-docker-swarm" />
 
 </graph>
