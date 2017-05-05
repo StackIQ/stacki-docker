@@ -3,9 +3,7 @@ docker-ce
 elrepo-release
 kernel-lt-doc
 kernel-ml-doc
-roll-stacki-docker-kickstart
 stacki-docker-spreadsheets
-stacki-sync-file
 docker-compose
 docker-swarm-demos
 kernel-lt

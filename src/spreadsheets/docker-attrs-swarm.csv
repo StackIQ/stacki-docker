@@ -1,0 +1,7 @@
+target,docker.registry.external,docker.registry.local,docker.swarm,docker.swarm.demo,docker.swarm.manager,docker.swarm.manager_ip,docker.swarm.node,docker.swarm.overlay_network,docker.swarm.overlay_network_name,docker.swarm.secondary_manager,docker.experimental,docker.swarm.mode
+global,True,False,True,True,False,10.1.255.254,True,172.16.10.0/24,testnet,False,True,True
+backend-0-0,,,,,True,,True,,,,
+backend-0-1,,,,,,,False,,,True,
+backend-0-2,,,,,,,False,,,True,
+backend-0-3,,,,,,,,,,,
+backend-0-4,,,,,,,,,,,

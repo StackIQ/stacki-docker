@@ -1,2 +1,0 @@
-target,docker.registry.external,docker.registry.local,docker.swarm,docker.swarm.demo,docker.swarm.manager,docker.swarm.manager_ip,docker.swarm.node,docker.swarm.overlay_network,docker.swarm.overlay_network_name,docker.swarm.secondary_manager,docker.experimental
-global,True,False,True,True,False,10.1.255.254,True,172.16.10.0/24,testnet,False,True

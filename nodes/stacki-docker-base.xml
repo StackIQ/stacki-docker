@@ -33,7 +33,7 @@ DOCKER_OPTS="--tlsverify --tlscacert=/etc/docker/ca.pem \
 		-H tcp://0.0.0.0:2376 -H fd:// -D"
 </file>
 </post>
-<post cond="&docker.experimental;">
+<post cond="docker.experimental">
 <file name="/etc/sysconfig/docker">
 DOCKER_OPTS="--tlsverify --tlscacert=/etc/docker/ca.pem \
 		--tlscert=/etc/docker/certs.d/server-cert.pem \
@@ -72,7 +72,7 @@ WantedBy=sockets.target
 systemctl enable docker.socket
 </post>
 
-<post cond="&docker.swarm.mode;">
+<post cond="docker.swarm.mode">
 <file name="/opt/stack/sbin/swarmtoken" perms="0755">
 #!/usr/bin/env python
 import xmlrpclib
