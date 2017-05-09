@@ -111,4 +111,49 @@ elif action == 'get':
 	print ret
 </file>
 </post>
+
+<post>
+<file name="/usr/lib/systemd/system/stack-post.service">
+[Unit]
+Description=stack-post
+After=multi-user.target
+
+[Service]
+Type=oneshot
+ExecStart=-/usr/bin/mv /etc/sysconfig/stack-post /root/stack-post.sh
+ExecStart=-/usr/bin/chmod 755 /root/stack-post.sh
+ExecStart=-/bin/bash -c '/root/stack-post.sh &gt; /root/stack-post.log'
+ExecStartPost=-/usr/bin/chmod 644 /root/stack-post.sh
+RemainAfterExit=no
+
+[Install]
+WantedBy=multi-user.target
+</file>
+
+systemctl enable stack-post.service &gt;&gt; stack.log 2&gt;&amp;1
+
+<file name="/usr/lib/systemd/system/stack-pre.service">
+[Unit]
+Description=stack-pre
+Before=network.target
+After=local-fs.target
+
+[Service]
+Type=oneshot
+ExecStart=-/usr/bin/mv /etc/sysconfig/stack-pre /root/stack-pre.sh
+ExecStart=-/usr/bin/chmod 755 /root/stack-pre.sh
+ExecStart=-/bin/bash -c '/root/stack-pre.sh &gt; /root/stack-pre.log'
+ExecStartPost=-/usr/bin/chmod 644 /root/stack-pre.sh
+RemainAfterExit=no
+
+[Install]
+WantedBy=multi-user.target
+</file>
+
+rm -f /etc/init.d/stack-pre
+rm -f /etc/init.d/stack-post
+systemctl enable stack-post.service &gt;&gt; stack.log 2&gt;&amp;1
+systemctl enable stack-pre.service &gt;&gt; stack.log 2&gt;&amp;1
+</post>
+
 </kickstart>
