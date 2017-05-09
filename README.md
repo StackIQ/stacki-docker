@@ -244,48 +244,18 @@ We are not quite done with frontend set-up yet. We need to pre-populate some att
 
 Install the spreadsheets examples for docker. These will be in /opt/stack/share/examples/spreadsheets/docker . They're CSV files. They are easier to see and change if you open them in Google Docs or Excel. Then export back to CSV and load them.
 
+They should be installed. If that directory doesn't exist, yum install them.
 ```
 [root@stackdock ~]# yum install stacki-docker-spreadsheets -y
-Resolving Dependencies
---> Running transaction check
----> Package stacki-docker-spreadsheets.noarch 0:0-3.2_phase2 will be installed
---> Finished Dependency Resolution
-
-Dependencies Resolved
-
-=============================================================================================================================
- Package                                Arch               Version                   Repository                         Size
-=============================================================================================================================
-Installing:
- stacki-docker-spreadsheets             noarch             0-3.2_phase2              stacki-docker-17.03.0             2.8 k
-
-Transaction Summary
-=============================================================================================================================
-Install  1 Package
-
-Total download size: 2.8 k
-Installed size: 1.0 k
-Downloading packages:
-stacki-docker-spreadsheets-0-3.2_phase2.noarch.rpm                                                    | 2.8 kB  00:00:00
-Running transaction check
-Running transaction test
-Transaction test succeeded
-Running transaction
-  Installing : stacki-docker-spreadsheets-0-3.2_phase2.noarch                                                            1/1
-  Verifying  : stacki-docker-spreadsheets-0-3.2_phase2.noarch                                                            1/1
-
-Installed:
-  stacki-docker-spreadsheets.noarch 0:0-3.2_phase2
-
-Complete!
 ```
 
 The spreadsheet we are first concerned with contains only the global attributes needed to run the stacki-pallet. There are other ways to do this, but going step by step gives you a feel for what needs to be done in toto.
 
+
 ```
 [root@stackdock ~]# cd /export/stack/spreadsheets/examples/
 
-[root@stackdock examples]# cat global-docker-attrs-swarm.csv
+[root@stackdock examples]# cat docker-attrs-swarm.csv
 
 target,docker.registry.external,docker.registry.local,docker.swarm,docker.swarm.demo,docker.swarm.manager,docker.swarm.manager_ip,docker.swarm.node,docker.swarm.overlay_network,docker.swarm.overlay_network_name,docker.swarm.secondary_manager,docker.experimental
 global,True,False,True,True,False,10.1.255.254,True,172.16.10.0/24,testnet,False,True
