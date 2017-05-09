@@ -253,20 +253,19 @@ The spreadsheet we are first concerned with contains only the global attributes 
 
 
 ```
-[root@stackdock ~]# cd /export/stack/spreadsheets/examples/
+[root@stackdock ~]# cd /opt/stack/share/examples/spreadsheets/docker/
 
-[root@stackdock examples]# cat docker-attrs-swarm.csv
+[root@stackdock ]# cat stacki-docker-4.0-global-docker-attrs-swarm.csv
 
-target,docker.registry.external,docker.registry.local,docker.swarm,docker.swarm.demo,docker.swarm.manager,docker.swarm.manager_ip,docker.swarm.node,docker.swarm.overlay_network,docker.swarm.overlay_network_name,docker.swarm.secondary_manager,docker.experimental
-global,True,False,True,True,False,10.1.255.254,True,172.16.10.0/24,testnet,False,True
+target,docker.registry.external,docker.registry.local,docker.swarm,docker.swarm.demo,docker.swarm.manager,docker.swarm.manager_ip,docker.swarm.node,docker.swarm.overlay_network,docker.swarm.overlay_network_name,docker.swarm.secondary_manager,docker.experimental,docker.swarm.mode
+global,True,False,True,True,False,10.1.255.254,True,172.16.10.0/24,testnet,False,True,True
 ```
 
 Here's a prettier view of it:
 
-| target | docker.registry.external | docker.registry.local | docker.swarm | docker.swarm.demo | docker.swarm.manager | docker.swarm.manager_ip | docker.swarm.node | docker.swarm.overlay_network | docker.swarm.overlay_network_name | docker.swarm.secondary_manager | docker.experimental | 
-|--------|--------------------------|-----------------------|--------------|-------------------|----------------------|-------------------------|-------------------|------------------------------|-----------------------------------|--------------------------------|---------------------| 
-| global | True                     | False                 | True         | True              | False                | 10.1.255.254            | True              | 172.16.10.0/24               | testnet                           | False                          | True                | 
-
+| target | docker.registry.external | docker.registry.local | docker.swarm | docker.swarm.demo | docker.swarm.manager | docker.swarm.manager_ip | docker.swarm.node | docker.swarm.overlay_network | docker.swarm.overlay_network_name | docker.swarm.secondary_manager | docker.experimental | docker.swarm.mode | 
+|--------|--------------------------|-----------------------|--------------|-------------------|----------------------|-------------------------|-------------------|------------------------------|-----------------------------------|--------------------------------|---------------------|-------------------| 
+| global | True                     | False                 | True         | True              | False                | 10.1.255.254            | True              | 172.16.10.0/24               | testnet                           | False                          | True                | True              | 
 
 I'll give a brief explanation here:
 
@@ -365,13 +364,23 @@ but I have not done that. So we need two more secondary_managers for
 a total of 3. The secondary manager role is for a limited number of 
 machines so it's False by default. We'll set it to True for a couple 
 of nodes in the hosts attributes spreadsheet below. 
+
+key: docker.experimental
+value:True
+description: Turns on experimental features in the docker engine. Leave it on.
+
+key: docker.swarm.mode
+value: True
+description: We assumed that's what you wanted. If you only want to have 
+docker engine running on backend nodes. Then set this to False.
 ```
+
 So edit this file appropriately. At minimum you'll have to change the 
-docker.swarm.manager_ip and then we the spreadsheet to the database 
+docker.swarm.manager_ip and then load the spreadsheet to the database 
 and then run the pallet to set-up the frontend to install backends properly.
 
 ```
-[root@stackdock examples]# stack load attrfile file=global-docker-attrs-swarm.csv
+[root@stackdock examples]# stack load attrfile file=stacki-docker-4.0-global-docker-attrs-swarm.csv
 /export/stack/spreadsheets/RCS/global-docker-attrs-swarm.csv,v  <--  /export/stack/spreadsheets/global-docker-attrs-swarm.csv
 file is unchanged; reverting to previous revision 1.1
 done
@@ -489,34 +498,34 @@ backend-0-4: 0    4    1    backend   default ----------- os        install
 
 When these do install, if there are other network interfaces, these will be discovered and added to the database. Those can then be plumbed and started by either reinstalling or syncing the network. If you are doing bonding/vlaning/other network thingies, get on the Slack channel or Google Groups and ask the ways in which you can make this work for your site.
 
-So now we have hosts, and I want to apply the docker configuration to those hosts. This is my attributes file with host specifications:
-
-| target      | docker.registry.external | docker.registry.local | docker.swarm | docker.swarm.demo | docker.swarm.manager | docker.swarm.manager_ip | docker.swarm.node | docker.swarm.overlay_network | docker.swarm.overlay_network_name | docker.swarm.secondary_manager | docker.experimental | 
-|-------------|--------------------------|-----------------------|--------------|-------------------|----------------------|-------------------------|-------------------|------------------------------|-----------------------------------|--------------------------------|---------------------| 
- backend-0-0 |                          |                       |              |                   | True                 |                         | False             |                              |                                   |                                |                     | 
-| backend-0-1 |                          |                       |              |                   |                      |                         | False             |                              |                                   | True                           |                     | 
-| backend-0-2 |                          |                       |              |                   |                      |                         | False             |                              |                                   | True                           |                     | 
-| backend-0-3 |                          |                       |              |                   |                      |                         |                   |                              |                                   |                                |                     | 
-| backend-0-4 |                          |                       |              |                   |                      |                         |                   |                              |                                   |                                |                     | 
+So now we have hosts, and I want to apply the docker configuration to those hosts. This is my attributes file with host specifications. It's from the stacki-docker-4.0-hosts-docker-attrs-swarm.csv file in the examples directory you are probably still sitting in.
 
 
-These are the same attributes as headers as in the first atttribute spreadsheet we loaded above. In reality, I usually just combine these into one file. It looks like this:
+| target      | docker.registry.external | docker.registry.local | docker.swarm | docker.swarm.demo | docker.swarm.manager | docker.swarm.manager_ip | docker.swarm.node | docker.swarm.overlay_network | docker.swarm.overlay_network_name | docker.swarm.secondary_manager | docker.experimental | docker.swarm.mode | 
+|-------------|--------------------------|-----------------------|--------------|-------------------|----------------------|-------------------------|-------------------|------------------------------|-----------------------------------|--------------------------------|---------------------|-------------------| 
+| backend-0-0 |                          |                       |              |                   | True                 |                         | True              |                              |                                   |                                |                     |                   | 
+| backend-0-1 |                          |                       |              |                   |                      |                         | False             |                              |                                   | True                           |                     |                   | 
+| backend-0-2 |                          |                       |              |                   |                      |                         | False             |                              |                                   | True                           |                     |                   | 
+| backend-0-3 |                          |                       |              |                   |                      |                         |                   |                              |                                   |                                |                     |                   | 
+| backend-0-4 |                          |                       |              |                   |                      |                         |                   |                              |                                   |                                |                     |                   | 
 
-| target      | docker.registry.external | docker.registry.local | docker.swarm | docker.swarm.demo | docker.swarm.manager | docker.swarm.manager_ip | docker.swarm.node | docker.swarm.overlay_network | docker.swarm.overlay_network_name | docker.swarm.secondary_manager | docker.experimental | 
-|-------------|--------------------------|-----------------------|--------------|-------------------|----------------------|-------------------------|-------------------|------------------------------|-----------------------------------|--------------------------------|---------------------| 
-| global      | True                     | False                 | True         | True              | False                | 10.1.255.254            | True              | 172.16.10.0/24               | testnet                           | False                          | True                | 
-| backend-0-0 |                          |                       |              |                   | True                 |                         | False             |                              |                                   |                                |                     | 
-| backend-0-1 |                          |                       |              |                   |                      |                         | False             |                              |                                   | True                           |                     | 
-| backend-0-2 |                          |                       |              |                   |                      |                         | False             |                              |                                   | True                           |                     | 
-| backend-0-3 |                          |                       |              |                   |                      |                         |                   |                              |                                   |                                |                     | 
-| backend-0-4 |                          |                       |              |                   |                      |                         |                   |                              |                                   |                                |                     | 
+These are the same attributes as headers as in the first atttribute spreadsheet we loaded above. In reality, I usually just combine these into one file. The example is stacki-docker-4.0-docker-attrs-swarm.csv It looks like this:
+
+| target      | docker.registry.external | docker.registry.local | docker.swarm | docker.swarm.demo | docker.swarm.manager | docker.swarm.manager_ip | docker.swarm.node | docker.swarm.overlay_network | docker.swarm.overlay_network_name | docker.swarm.secondary_manager | docker.experimental | docker.swarm.mode | 
+|-------------|--------------------------|-----------------------|--------------|-------------------|----------------------|-------------------------|-------------------|------------------------------|-----------------------------------|--------------------------------|---------------------|-------------------| 
+| global      | True                     | False                 | True         | True              | False                | 10.1.255.254            | True              | 172.16.10.0/24               | testnet                           | False                          | True                | True              | 
+| backend-0-0 |                          |                       |              |                   | True                 |                         | True              |                              |                                   |                                |                     |                   | 
+| backend-0-1 |                          |                       |              |                   |                      |                         | False             |                              |                                   | True                           |                     |                   | 
+| backend-0-2 |                          |                       |              |                   |                      |                         | False             |                              |                                   | True                           |                     |                   | 
+| backend-0-3 |                          |                       |              |                   |                      |                         |                   |                              |                                   |                                |                     |                   | 
+| backend-0-4 |                          |                       |              |                   |                      |                         |                   |                              |                                   |                                |                     |                   | 
 
 
-Same file with the "global" line. It's easier in terms of configuring, but harder in terms of explanation. If you use the combined file, just make sure you set the proper values for your attributes in the global line before loading. 
+This is the same host attrs file with the "global" line. Or the same global file with the host lines. It's easier in terms of configuring, but harder in terms of explanation. If you use the combined file, just make sure you set the proper values for your attributes in the global line before loading. 
 
 The attributes are the same as the above explanation so I won't explain them again. I'll just explain what we are changing.
 
-In this particular file, we're going to make backend-0-0 our master, and backend-0-1 and backend-0-2 as secondary managers for docker swarm mode. This provides the consensus machines for the raft algorithm. Remember, the default global will be set for any host that does not change it on the host line in the file. 
+In this particular file, we're going to make backend-0-0 our master, and backend-0-1 and backend-0-2 as secondary managers for docker swarm mode. This provides the consensus machines for the raft algorithm. Remember, the default global attribute will be set to the value in the global line for any host that does not change it on the host line in the file. 
 
 To get the config I want: 
 docker.swarm.manager is going to be set to True for backend-0-0 and it's default False for everything else.
@@ -527,9 +536,9 @@ docker.swarm.manager_ip is 10.1.255.254 and that's at a global level. It matches
 It's easiest to put this in an Excel or Google Spreadsheet and edit your values there. Then export back as CSV and load. The file itself will look like this, but commas are hard to keep track of in vi.
 
 ```
-target,docker.registry.external,docker.registry.local,docker.swarm,docker.swarm.demo,docker.swarm.manager,docker.swarm.manager_ip,docker.swarm.node,docker.swarm.overlay_network,docker.swarm.overlay_network_name,docker.swarm.secondary_manager,docker.experimental
-global,True,False,True,True,False,10.1.255.254,True,172.16.10.0/24,testnet,False,True
-backend-0-0,,,,,True,,False,,,,
+target,docker.registry.external,docker.registry.local,docker.swarm,docker.swarm.demo,docker.swarm.manager,docker.swarm.manager_ip,docker.swarm.node,docker.swarm.overlay_network,docker.swarm.overlay_network_name,docker.swarm.secondary_manager,docker.experimental,docker.swarm.mode
+global,True,False,True,True,False,10.1.255.254,True,172.16.10.0/24,testnet,False,True,True
+backend-0-0,,,,,True,,True,,,,
 backend-0-1,,,,,,,False,,,True,
 backend-0-2,,,,,,,False,,,True,
 backend-0-3,,,,,,,,,,,
@@ -539,7 +548,7 @@ backend-0-4,,,,,,,,,,,
 So let's load it:
 
 ```
-[root@stackdock examples]# stack load attrfile file=host-docker-attrs-swarm.csv
+[root@stackdock examples]# stack load attrfile file=stacki-docker-4.0-host-docker-attrs-swarm.csv
 /export/stack/spreadsheets/RCS/host-docker-attrs-swarm.csv,v  <--  /export/stack/spreadsheets/host-docker-attrs-swarm.csv
 initial revision: 1.1
 done
@@ -589,18 +598,7 @@ All that looks good. Hopefully we didn't screw anything up. NOW we want to run t
 ```
 Should output something like this:
 ```
-CentOS-7                                                                                                                    | 3.6 kB  00:00:00
-CentOS-Updates-7.3                                                                                                          | 2.9 kB  00:00:00
-stacki-3.2                                                                                                                  | 2.9 kB  00:00:00
-stacki-docker-17.03.0                                                                                                       | 2.9 kB  00:00:00
-stacki-prometheus-1.0                                                                                                       | 2.9 kB  00:00:00
-(1/6): CentOS-7/group_gz                                                                                                    | 155 kB  00:00:00
-(2/6): stacki-prometheus-1.0/primary_db                                                                                     | 3.2 kB  00:00:00
-(3/6): CentOS-7/primary_db                                                                                                  | 5.6 MB  00:00:00
-(4/6): CentOS-Updates-7.3/primary_db                                                                                        | 1.2 MB  00:00:00
-(5/6): stacki-3.2/primary_db                                                                                                |  30 kB  00:00:00
-(6/6): stacki-docker-17.03.0/primary_db                                                                                     | 852 kB  00:00:00
-Package stacki-docker-spreadsheets-0-3.2_phase2.noarch already installed and latest version
+Package stacki-docker-spreadsheets-4.0-7.x_phase2.noarch already installed and latest version
 Nothing to do
 RCS file: /opt/stack/sbin/RCS/stacki-listener,v
 done
@@ -615,7 +613,7 @@ And your stacki-listener should be listening:
 [root@stackdock examples]# systemctl is-active stacki-listener
 active
 ```
-(The stacki-listener is the magic to automatically join managers and nodes to the Docker Swarm when it's run in swarm mode. It just listens for a worker token and a manager token, which are generated by the swarm manager on first boot. The other nodes listen and wait until they get a "worker:Token" pair and then they join the cluster. This means you don't have to run any commands to get a node to join the swarm. You'll appreciate this if you're as lazy as I am. The stacki-listener is just python xml-rpc. I would like to rewrite it in go but you could also use the Salt event bus or redis if you want to go that route.)
+(The stacki-listener is the magic to automatically join managers and nodes to the Docker Swarm when it's run in swarm mode. It just listens for a worker token and a manager token, which are generated by the swarm manager on first boot. The other nodes listen and wait until they get a "worker:Token" pair and then they join the cluster. This means you don't have to run any commands to get a node to join the swarm. You'll appreciate this if you're as lazy as I am. The stacki-listener is just python xml-rpc. I would like to rewrite it in Go but you could also use the Salt event bus or redis if you want to go that route.)
 
 <h3>Monitoring</h3>
 
@@ -644,11 +642,11 @@ Let's install:
 ```
 Now power cycle whatever way you can. 
 
-The first command sets the nodes to install the next boot, assuming your nodes are set to PXE first. (You're running a cluster - why aren't they?) 
+The first command sets the nodes to install the next boot, assuming your nodes are set to PXE first. (You're running a cluster - why aren't they PXE first? [ Oh! Because you're working for a paranoid bank.])
 
 Setting the "nukedisks" command will reformat and repartition our disks which is what we want. This is no brownfield - you're getting these under your complete control. 
 
-When these nodes come up, if you have enabled docker.swarm, you should have a bunch of nodes available in docker swarm mode. If you have not enabled docker.swarm, docker will be installed on these nodes and running, ready to pull from the default registry, which I think is hub.docker.io or whatever. 
+When these nodes come up, if you have enabled docker.swarm.mode and docker.swarm, you should have a bunch of nodes available in docker swarm mode. If you have not enabled these two attributes, docker will be installed on these nodes and running, ready to pull from the default registry, which I think is hub.docker.io or whatever. 
 
 I have some ideas for how to handle registries. My assumpution is people want external access (hub.docker.io), internal access to a site registry, or a registry local to the cluster, i.e. docker run registry on a given node. If there is some other method you want to see for registries let me know on Slack or on Google Groups, and I'll add it to the next update of the stacki-docker pallet.
 
