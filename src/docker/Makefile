@@ -45,12 +45,14 @@ RPM.STRATEGY	= custom
 include $(STACKBUILD)/etc/CCRules.mk
 
 refresh::
-	rm -fr ./RPMS
-	mkdir ./RPMS
+	rm -fr ./RPMS ./SRPMS
+	mkdir ./RPMS ./SRPMS
 	reposync -d -p ./RPMS -n -r docker-ce-stable -c ./docker.ce.repo --norepopath
+	reposync --source -d -p ./SRPMS -n -r docker-ce-stable-source -c ./docker.ce.repo --norepopath
 
 rpm::
 	mkdir -p $(REDHAT.RPMS)/x86_64/
 	mkdir -p $(REDHAT.RPMS)/noarch/
 	cp -p ./RPMS/Packages/*.x86_64.rpm $(REDHAT.RPMS)/x86_64/
 	cp -p ./RPMS/Packages/*.noarch.rpm $(REDHAT.RPMS)/noarch/
+	cp -p ./SRPMS/Packages/*.src.rpm $(REDHAT.SRPMS)

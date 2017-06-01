@@ -45,12 +45,14 @@ RPM.STRATEGY	= custom
 include $(STACKBUILD)/etc/CCRules.mk
 
 refresh::
-	rm -fr ./RPMS
-	mkdir ./RPMS
+	rm -fr ./RPMS ./SRPMS
+	mkdir ./RPMS ./SRPMS
 	reposync -n -r elrepo-kernel -c ./elrepo.repo --norepopath
+	reposync --source -p ./SRPMS -n -r elrepo-kernel-src -c ./elrepo.repo --norepopath
 
 rpm::
 	mkdir -p $(REDHAT.RPMS)/x86_64/
 	mkdir -p $(REDHAT.RPMS)/noarch/
 	cp -p ./RPMS/*.x86_64.rpm $(REDHAT.RPMS)/x86_64/
 	cp -p ./RPMS/*.noarch.rpm $(REDHAT.RPMS)/noarch/
+	cp -p ./SRPMS/*src.rpm $(REDHAT.SRPMS)
