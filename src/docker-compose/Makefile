@@ -1,7 +1,7 @@
 # @SI_Copyright@
 # @SI_Copyright@
 
-PKGROOT		= /usr/bin
+PKGROOT		= /usr/local/bin
 ROLLROOT	= ../..
 RURL		= https://github.com/docker/compose/releases/latest
 URL		= https://github.com/docker/compose/releases/download

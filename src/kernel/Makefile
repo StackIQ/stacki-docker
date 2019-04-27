@@ -56,3 +56,6 @@ rpm::
 	cp -p ./RPMS/*.x86_64.rpm $(REDHAT.RPMS)/x86_64/
 	cp -p ./RPMS/*.noarch.rpm $(REDHAT.RPMS)/noarch/
 	cp -p ./SRPMS/*src.rpm $(REDHAT.SRPMS)
+
+nuke::
+	rm -fr ./RPMS ./SRPMS

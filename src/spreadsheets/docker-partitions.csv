@@ -1,7 +1,0 @@
-Name,Device,Mountpoint,Size,Type,Options
-backend,sda,biosboot,1,biosboot,
-,sda,/boot,1024,xfs,
-,sda,/,16000,xfs,
-,sda,/var,26000,xfs,
-,sda,swap,8192,swap,
-,sda,/var/lib/docker,0,xfs,--grow --mkfsoptions="-n ftype=1"

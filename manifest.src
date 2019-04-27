@@ -1,5 +1,0 @@
-src/docker/SRPMS/Packages/docker-ce-17.03.1.ce-1.el7.centos.src.rpm
-src/docker/SRPMS/Packages/docker-ce-selinux-17.03.1.ce-1.el7.centos.src.rpm
-src/kernel/SRPMS/elrepo-release-7.0-2.el7.elrepo.src.rpm
-src/kernel/SRPMS/kernel-lt-4.4.70-1.el7.elrepo.nosrc.rpm
-src/kernel/SRPMS/kernel-ml-4.11.3-1.el7.elrepo.nosrc.rpm

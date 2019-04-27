@@ -1,159 +1,16 @@
-<?xml version="1.0" standalone="no"?>
+<stack:stack>
 
-<kickstart>
+<stack:package>kernel-ml</stack:package>
+<stack:package>docker-ce</stack:package>
+<stack:package>docker-ce-selinux</stack:package>
+<stack:package>docker-compose</stack:package>
 
-
-	<description>
-	Your stacki-docker pallet description here
-	</description>
-
-	<si_copyright>
-	(c) 2006 - 2016 StackIQ Inc.
-	All rights reserved. stacki(r) v3.1 www.stacki.com
-	</si_copyright>
-
-<package>kernel-ml</package>
-<package>docker-ce</package>
-<package>docker-ce-selinux</package>
-<package>docker-compose</package>
-
-<post>
-<file name="/etc/sysctl.conf" mode="append">
+<stack:script stack:stage="install-post">
+<stack:file stack:name="/etc/sysctl.conf" mode="append">
 net.ipv4.ip_forward=1
 net.bridge.bridge-nf-call-arptables=1
 net.bridge.bridge-nf-call-iptables=1
-</file>
-</post>
+</stack:file>
+</stack:script>
 
-<post>
-<file name="/etc/sysconfig/docker">
-DOCKER_OPTS="--tlsverify --tlscacert=/etc/docker/ca.pem \
-		--tlscert=/etc/docker/certs.d/server-cert.pem \
-		--tlskey=/etc/docker/certs.d/server-key.pem \
-		-H tcp://0.0.0.0:2376 -H fd:// -D"
-</file>
-</post>
-<post cond="docker.experimental">
-<file name="/etc/sysconfig/docker">
-DOCKER_OPTS="--tlsverify --tlscacert=/etc/docker/ca.pem \
-		--tlscert=/etc/docker/certs.d/server-cert.pem \
-		--tlskey=/etc/docker/certs.d/server-key.pem \
-		--experimental=True --metrics-addr=0.0.0.0:9323 \
-		-H tcp://0.0.0.0:2376 -H fd:// -D"
-</file>
-</post>
-<post>
-<file name="/etc/systemd/system/docker.service.d/override.conf">
-[Service]
-EnvironmentFile=/etc/sysconfig/docker
-ExecStart=
-ExecStart=/usr/bin/dockerd -s overlay $DOCKER_OPTS
-Restart=always
-RestartSec=10
-</file>
-systemctl enable docker
-</post>
-
-<post>
-<file name="/usr/lib/systemd/system/docker.socket">
-[Unit]
-Description=Docker Socket for the API
-PartOf=docker.service
-
-[Socket]
-ListenStream=/var/run/docker.sock
-SocketMode=0660
-SocketUser=root
-SocketGroup=docker
-
-[Install]
-WantedBy=sockets.target
-</file>
-systemctl enable docker.socket
-</post>
-
-<post cond="docker.swarm.mode">
-<file name="/opt/stack/sbin/swarmtoken" perms="0755">
-#!/usr/bin/env python
-import xmlrpclib
-import time
-import sys
-
-proxy = xmlrpclib.ServerProxy("http://&Kickstart_PrivateAddress;:8000/")
-
-def put_token(key,token):
-	proxy.write_token(key,token)
-	
-def get_token(key):
-	try:
-		token = proxy.read_token(key)
-		return token
-	except:
-		return 255
-
-def clear_token():
-	proxy.clear_token()
-			
-action = sys.argv[1]
-if action == 'clear':
-	clear_token()
-elif action == 'put':
-	key = sys.argv[2]
-	token = sys.argv[3]
-	put_token(key,token)
-elif action == 'get':
-	key = sys.argv[2]
-	get_token(key)
-	ret = get_token(key)
-	while ret == 255:
-		time.sleep(10)
-		ret = get_token(key)
-	print ret
-</file>
-</post>
-
-<post>
-<file name="/usr/lib/systemd/system/stack-post.service">
-[Unit]
-Description=stack-post
-After=multi-user.target
-
-[Service]
-Type=oneshot
-ExecStart=-/usr/bin/mv /etc/sysconfig/stack-post /root/stack-post.sh
-ExecStart=-/usr/bin/chmod 755 /root/stack-post.sh
-ExecStart=-/bin/bash -c '/root/stack-post.sh &gt; /root/stack-post.log'
-ExecStartPost=-/usr/bin/chmod 644 /root/stack-post.sh
-RemainAfterExit=no
-
-[Install]
-WantedBy=multi-user.target
-</file>
-
-systemctl enable stack-post.service &gt;&gt; stack.log 2&gt;&amp;1
-
-<file name="/usr/lib/systemd/system/stack-pre.service">
-[Unit]
-Description=stack-pre
-Before=network.target
-After=local-fs.target
-
-[Service]
-Type=oneshot
-ExecStart=-/usr/bin/mv /etc/sysconfig/stack-pre /root/stack-pre.sh
-ExecStart=-/usr/bin/chmod 755 /root/stack-pre.sh
-ExecStart=-/bin/bash -c '/root/stack-pre.sh &gt; /root/stack-pre.log'
-ExecStartPost=-/usr/bin/chmod 644 /root/stack-pre.sh
-RemainAfterExit=no
-
-[Install]
-WantedBy=multi-user.target
-</file>
-
-rm -f /etc/init.d/stack-pre
-rm -f /etc/init.d/stack-post
-systemctl enable stack-post.service &gt;&gt; stack.log 2&gt;&amp;1
-systemctl enable stack-pre.service &gt;&gt; stack.log 2&gt;&amp;1
-</post>
-
-</kickstart>
+</stack:stack>
